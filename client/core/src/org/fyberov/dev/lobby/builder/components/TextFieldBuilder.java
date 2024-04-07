@@ -43,11 +43,12 @@ public class TextFieldBuilder extends TextComponentBuilder<TextFieldBuilder> {
     /**
      * Set cursor for the text field.
      *
-     * @param path path to the text field image
+     * @param patch patch name of input cursor
      * @return this instance
      */
-    public TextFieldBuilder withCursor(String path) {
-        this.style.cursor = new TextureRegionDrawable(new Texture(path));
+    public TextFieldBuilder withCursor(String patch) {
+        this.style.cursor = new NinePatchDrawable(skin.getPatch(patch));
+        this.style.cursor.setRightWidth(5);
         return this;
     }
 
