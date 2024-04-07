@@ -3,11 +3,9 @@ package org.fyberov.dev.lobby.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
@@ -32,7 +30,9 @@ public class MainMenuScreen extends ScreenAdapter {
     private Table setupUI() {
         Table table = new Table();
         table.setFillParent(true);
-        table.defaults().space(50);
+        table.defaults().space(25);
+
+        Skin skin = new Skin(new TextureAtlas(Gdx.files.internal("skin/skin.atlas")));
 
         Label label = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withText("Write your name")
@@ -42,7 +42,10 @@ public class MainMenuScreen extends ScreenAdapter {
         table.add(label).uniform().fillX();
 
         TextField field = new TextFieldBuilder(Constants.DEFAULT_FONT_PATH)
-                .withCursor("components/cursor.png")
+                .withSkin(skin)
+                .withBackground("input_up")
+                .withFocusedBackground("input_down")
+                .withCursor("input_cursor")
                 .withFontSize(56)
                 .build();
         field.setAlignment(Align.center);
@@ -51,6 +54,10 @@ public class MainMenuScreen extends ScreenAdapter {
         table.add(field).uniform().fillX();
 
         TextButton button = new TextButtonBuilder(Constants.DEFAULT_FONT_PATH)
+                .withSkin(skin)
+                .withUp("button_up")
+                .withDown("button_down")
+                .withOver("button_over")
                 .withText("START")
                 .withFontSize(56)
                 .build();
