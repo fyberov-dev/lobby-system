@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.ScrollPaneBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
+import org.fyberov.dev.lobby.listeners.buttons.JoinLobbyClickListener;
 import org.fyberov.dev.lobby.util.Constants;
 
 public class LobbiesScreen extends ScreenAdapter {
@@ -104,6 +105,7 @@ public class LobbiesScreen extends ScreenAdapter {
                 .build();
 
         lobby.background(new NinePatchDrawable(skin.getPatch("button_up")));
+        lobby.addListener(new JoinLobbyClickListener());
         lobby.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
