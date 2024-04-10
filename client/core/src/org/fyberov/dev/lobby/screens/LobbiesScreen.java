@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.fyberov.dev.lobby.GameClient;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.ScrollPaneBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
@@ -28,6 +29,8 @@ public class LobbiesScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        connectToServerIfNotConnected();
+
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -38,6 +41,15 @@ public class LobbiesScreen extends ScreenAdapter {
 //        stage.setDebugAll(true);
 
         stage.addActor(table);
+    }
+
+    /**
+     * Connect this client to the server. If already connected -> skip connection
+     */
+    private void connectToServerIfNotConnected() {
+        if (!GameClient.isConnectedToServer()) {
+            GameClient.connectToServer();
+        }
     }
 
     private Table setupUI() {
