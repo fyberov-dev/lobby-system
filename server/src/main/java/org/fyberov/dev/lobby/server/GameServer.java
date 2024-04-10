@@ -13,10 +13,10 @@ public class GameServer {
     /**
      * Initialize GameServer.
      */
-    public GameServer(int tcpPort, int udpPort) {
+    public GameServer() {
         this.server = new Server();
         this.registerKryoClasses();
-        this.startServer(tcpPort, udpPort);
+        this.startServer();
         this.server.addListener(new ServerListener());
     }
 
@@ -28,27 +28,25 @@ public class GameServer {
      */
     private void registerKryoClasses() {
         Kryo kryo = new Kryo();
-    }
-
-    /**
-     * Start the server using specified TCP and UDP ports.
-     *
-     * @param tcpPort TCP port to set
-     * @param udpPort UDP port to set
-     */
-    private void startServer(int tcpPort, int udpPort) {
-        try {
-            server.start();
-            server.bind(tcpPort, udpPort);
-        } catch (IOException e) {
-            System.out.println("Something bad happened on server start");
-        }
+        // register classes
     }
 
     private static final int DEFAULT_TCP_PORT = 8080;
     private static final int DEFAULT_UDP_PORT = 8081;
 
+    /**
+     * Start the server using specified TCP and UDP ports.
+     */
+    private void startServer() {
+        try {
+            server.start();
+            server.bind(DEFAULT_TCP_PORT, DEFAULT_UDP_PORT);
+        } catch (IOException e) {
+            System.out.println("Something bad happened on server start");
+        }
+    }
+
     public static void main(String[] args) {
-        new GameServer(DEFAULT_TCP_PORT, DEFAULT_UDP_PORT);
+        new GameServer();
     }
 }
