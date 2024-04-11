@@ -1,49 +1,43 @@
 package org.fyberov.dev.lobby.server;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryonet.Server;
-import org.fyberov.dev.lobby.server.listener.ServerListener;
+import org.fyberov.dev.lobby.server.network.ServerSystem;
+import org.fyberov.dev.lobby.server.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.server.player.Player;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GameServer {
 
-    Server server;
+    private static GameServer instance;
+    private final ServerSystem server;
+    private final Map<Integer, Player> players;
 
     /**
      * Initialize GameServer.
      */
-    public GameServer() {
-        this.server = new Server();
-        this.registerKryoClasses();
-        this.startServer();
-        this.server.addListener(new ServerListener());
+    private GameServer() {
+        instance = this;
+        this.server = new ServerSystem();
+        this.server.startServer();
+
+        this.players = new HashMap<>();
     }
 
     /**
-     * Register classes that will be sent from client to server and vice versa using Kryo.
-     * <p>
-     * You should register classes on the server and on the client at the same time.
-     * Classes should be registered at the same order.
+     * Aad new Player and return response to the client.
+     *
+     * @param connectionId connection id of the player to add
+     * @param name name of the player to add
      */
-    private void registerKryoClasses() {
-        Kryo kryo = new Kryo();
-        // register classes
+    public void addPlayer(int connectionId, String name) {
+        players.put(connectionId, new Player(name));
+        System.out.printf("[%d] Player connected to the server: %s", connectionId, name);
+        server.sendToUDP(connectionId, new PlayerCreatePacket(name));
     }
 
-    private static final int DEFAULT_TCP_PORT = 8080;
-    private static final int DEFAULT_UDP_PORT = 8081;
-
-    /**
-     * Start the server using specified TCP and UDP ports.
-     */
-    private void startServer() {
-        try {
-            server.start();
-            server.bind(DEFAULT_TCP_PORT, DEFAULT_UDP_PORT);
-        } catch (IOException e) {
-            System.out.println("Something bad happened on server start");
-        }
+    public static GameServer getInstance() {
+        return instance;
     }
 
     public static void main(String[] args) {
