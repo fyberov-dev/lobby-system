@@ -1,9 +1,14 @@
 package org.fyberov.dev.lobby;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.ClientSystem;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.player.Player;
+import org.fyberov.dev.lobby.runnable.SetScreenRunnable;
+import org.fyberov.dev.lobby.screens.LobbiesScreen;
+import org.fyberov.dev.lobby.screens.LobbyScreen;
 import org.fyberov.dev.lobby.screens.MainMenuScreen;
 import org.fyberov.dev.lobby.util.Constants;
 
@@ -12,6 +17,7 @@ public class GameClient extends Game {
 	private static GameClient instance;
 	private static ClientSystem client;
 	private static Player player;
+	private static Lobby lobby;
 
 	/**
 	 * Initialize GameClient.
@@ -43,11 +49,26 @@ public class GameClient extends Game {
 
 	/**
 	 * Create new Player instance.
+	 * Set screen to the LobbiesScreen.
 	 *
 	 * @param name name of the player to create
 	 */
 	public static void createPlayer(String name) {
-		player = new Player(name);
+		player = new Player(client.getID(), name);
+		Gdx.app.postRunnable(new SetScreenRunnable(new LobbiesScreen()));
+	}
+
+	/**
+	 * Create new Lobby instance.
+	 * Set screen to the LobbyScreen.
+	 *
+	 * @param lobbyId id of the lobby
+	 * @param name name of the lobby
+	 * @param maxPlayers max players that can join (In this project default is 2)
+	 */
+	public static void createLobby(int lobbyId, String name, int maxPlayers) {
+		lobby = new Lobby(lobbyId, player, name, maxPlayers, true);
+		Gdx.app.postRunnable(new SetScreenRunnable(new LobbyScreen(lobby)));
 	}
 
 	/**
@@ -74,5 +95,9 @@ public class GameClient extends Game {
 
 	public static Player getPlayer() {
 		return player;
+	}
+
+	public static Lobby getLobby() {
+		return lobby;
 	}
 }

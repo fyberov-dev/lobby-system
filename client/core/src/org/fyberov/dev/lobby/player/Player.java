@@ -6,6 +6,7 @@ public class Player {
         IDLE, IN_LOBBY, IN_GAME
     }
 
+    private int clientId;
     private String name;
     private Status status;
 
@@ -14,7 +15,8 @@ public class Player {
      *
      * @param name name of the player
      */
-    public Player(final String name) {
+    public Player(int clientId, String name) {
+        this.clientId = clientId;
         this.name = name;
         this.status = Status.IDLE;
     }
@@ -25,5 +27,9 @@ public class Player {
 
     public Status getStatus() {
         return status;
+    }
+
+    public int getClientId() {
+        return clientId;
     }
 }
