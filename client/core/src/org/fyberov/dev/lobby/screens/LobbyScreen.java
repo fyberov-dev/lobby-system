@@ -4,26 +4,39 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.fyberov.dev.lobby.GameClient;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
 import org.fyberov.dev.lobby.listeners.buttons.SetLobbiesScreenOnClickListener;
+import org.fyberov.dev.lobby.lobby.Lobby;
+import org.fyberov.dev.lobby.player.Player;
 import org.fyberov.dev.lobby.util.Constants;
 
 public class LobbyScreen extends ScreenAdapter {
 
+    private Lobby currentLobby;
     private Stage stage;
+    private Skin skin;
     private Table lobby;
     private Table players;
 
+    public LobbyScreen(Lobby currentLobby) {
+        this.currentLobby = currentLobby;
+    }
+
     @Override
     public void show() {
+        skin = new Skin(new TextureAtlas(Gdx.files.internal("skin/skin.atlas")));
+
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -33,8 +46,6 @@ public class LobbyScreen extends ScreenAdapter {
     }
 
     private void setupUI() {
-        Skin skin = new Skin(new TextureAtlas(Gdx.files.internal("skin/skin.atlas")));
-
         lobby = new Table().pad(50);
         lobby.setFillParent(true);
 
@@ -46,7 +57,7 @@ public class LobbyScreen extends ScreenAdapter {
 
         Label lobbyNameLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withFontSize(36)
-                .withText("Fyberov's lobby")
+                .withText(GameClient.getLobby().getName())
                 .build();
 
         lobby.defaults().space(50);
@@ -58,8 +69,7 @@ public class LobbyScreen extends ScreenAdapter {
         players = new Table();
         players.defaults().space(25);
 
-        addPlayer(skin);
-        addPlayer(skin);
+        addPlayer(GameClient.getPlayer());
 
         lobby.add(players).colspan(2).fillX().growY();
 
@@ -79,26 +89,35 @@ public class LobbyScreen extends ScreenAdapter {
 //        lobby.setDebug(true);
     }
 
-    private void addPlayer(Skin skin) {
-        Table player = new Table().pad(25, 50, 25, 50);
+    /**
+     * Add new player table to the lobby.
+     *
+     * @param player player to add
+     */
+    private void addPlayer(Player player) {
+        Table playerTable = new Table().pad(25, 50, 25, 50);
+
+        String statusText = currentLobby.getIsPlayerReady().get(player.getClientId())
+                ? "Is ready"
+                : "Is not ready";
 
         Label playerStatusLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withFontSize(24)
-                .withText("Not ready")
+                .withText(statusText)
                 .build();
 
         Label playerNameLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withFontSize(36)
-                .withText("Fyberov")
+                .withText(player.getName())
                 .build();
 
-        player.defaults().space(25);
-        player.add(playerStatusLabel);
-        player.row();
-        player.add(playerNameLabel);
-        player.background(new NinePatchDrawable(skin.getPatch("button_up")));
+        playerTable.defaults().space(25);
+        playerTable.add(playerStatusLabel);
+        playerTable.row();
+        playerTable.add(playerNameLabel);
+        playerTable.background(new NinePatchDrawable(skin.getPatch("button_up")));
 
-        players.add(player).growX().row();
+        players.add(playerTable).growX().row();
     }
 
     @Override

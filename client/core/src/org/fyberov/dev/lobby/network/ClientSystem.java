@@ -3,6 +3,8 @@ package org.fyberov.dev.lobby.network;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import org.fyberov.dev.lobby.listeners.network.ClientListener;
+import org.fyberov.dev.lobby.network.packet.LobbyCreatePacket;
+import org.fyberov.dev.lobby.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.util.Constants;
 
@@ -34,6 +36,8 @@ public class ClientSystem extends Client {
         Kryo kryo = getKryo();
         // register classes
         kryo.register(PlayerCreatePacket.class);
+        kryo.register(LobbyCreatePacket.class);
+        kryo.register(LobbyCreatedPacket.class);
     }
 
     /**

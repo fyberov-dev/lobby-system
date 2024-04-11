@@ -6,15 +6,17 @@ public class Player {
         IDLE, IN_LOBBY, IN_GAME
     }
 
-    private final String name;
+    private int connectionId;
+    private String name;
     private Status status;
 
     /**
      * Initialize player.
      *
+     * @param connectionId id of the player connection
      * @param name name of the player
      */
-    public Player(final String name) {
+    public Player(int connectionId, String name) {
         this.name = name;
         this.status = Status.IDLE;
     }
@@ -25,5 +27,9 @@ public class Player {
 
     public Status getStatus() {
         return status;
+    }
+
+    public int getConnectionId() {
+        return connectionId;
     }
 }
