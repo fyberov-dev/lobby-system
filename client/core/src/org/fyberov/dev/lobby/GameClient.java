@@ -2,6 +2,8 @@ package org.fyberov.dev.lobby;
 
 import com.badlogic.gdx.Game;
 import org.fyberov.dev.lobby.network.ClientSystem;
+import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.player.Player;
 import org.fyberov.dev.lobby.screens.MainMenuScreen;
 import org.fyberov.dev.lobby.util.Constants;
 
@@ -9,6 +11,7 @@ public class GameClient extends Game {
 
 	private static GameClient instance;
 	private static ClientSystem client;
+	private static Player player;
 
 	/**
 	 * Initialize GameClient.
@@ -30,9 +33,21 @@ public class GameClient extends Game {
 
 	/**
 	 * Connect to the server using host, udp/tcp port constants.
+	 *
+	 * @param name player name for server connection
 	 */
-	public static void connectToServer() {
+	public static void connectToServer(String name) {
 		client.connectToServer();
+		client.sendUDP(new PlayerCreatePacket(name));
+	}
+
+	/**
+	 * Create new Player instance.
+	 *
+	 * @param name name of the player to create
+	 */
+	public static void createPlayer(String name) {
+		player = new Player(name);
 	}
 
 	/**
@@ -55,5 +70,9 @@ public class GameClient extends Game {
 
 	public static GameClient getInstance() {
 		return instance;
+	}
+
+	public static Player getPlayer() {
+		return player;
 	}
 }

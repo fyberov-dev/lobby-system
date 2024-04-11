@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
 import org.fyberov.dev.lobby.builder.components.TextFieldBuilder;
-import org.fyberov.dev.lobby.listeners.buttons.SetLobbiesScreenOnClickListener;
+import org.fyberov.dev.lobby.listeners.buttons.ConnectToGameServerClickListener;
 import org.fyberov.dev.lobby.util.Constants;
 
 public class MainMenuScreen extends ScreenAdapter {
@@ -62,7 +62,7 @@ public class MainMenuScreen extends ScreenAdapter {
                 .withText("START")
                 .withFontSize(56)
                 .build();
-        button.addListener(new SetLobbiesScreenOnClickListener());
+        button.addListener(new ConnectToGameServerClickListener(field));
 
         table.row();
 

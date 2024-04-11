@@ -2,6 +2,8 @@ package org.fyberov.dev.lobby.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
+import org.fyberov.dev.lobby.listeners.network.ClientListener;
+import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.util.Constants;
 
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class ClientSystem extends Client {
     public ClientSystem(String host) {
         this.host = host;
         this.registerKryo();
+        addListener(new ClientListener());
     }
 
     /**
@@ -30,6 +33,7 @@ public class ClientSystem extends Client {
     public void registerKryo() {
         Kryo kryo = getKryo();
         // register classes
+        kryo.register(PlayerCreatePacket.class);
     }
 
     /**
