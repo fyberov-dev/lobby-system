@@ -1,6 +1,6 @@
 package org.fyberov.dev.lobby.lobby;
 
-import org.fyberov.dev.lobby.player.Player;
+import org.fyberov.dev.lobby.player.PlayerOverview;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,11 +8,17 @@ import java.util.Map;
 public class Lobby {
 
     private int lobbyId;
+    private PlayerOverview creator;
     private String name;
     private int maxPlayers;
-    private Map<Integer, Player> players;
+    private Map<Integer, PlayerOverview> players;
     private Map<Integer, Boolean> isPlayerReady;
-    private boolean isCreator;
+
+    /**
+     * Initialize empty Lobby.
+     */
+    public Lobby() {
+    }
 
     /**
      * Initialize Lobby.
@@ -21,13 +27,11 @@ public class Lobby {
      * @param creator creator of the lobby
      * @param name name of the lobby
      * @param maxPlayers max players that can join the lobby
-     * @param isCreator is this session player creator of this lobby instance
      */
-    public Lobby(int lobbyId, Player creator, String name, int maxPlayers, boolean isCreator) {
+    public Lobby(int lobbyId, PlayerOverview creator, String name, int maxPlayers) {
         this.lobbyId = lobbyId;
         this.name = name;
         this.maxPlayers = maxPlayers;
-        this.isCreator = isCreator;
 
         this.players = new HashMap<>();
         this.isPlayerReady = new HashMap<>();
@@ -38,11 +42,11 @@ public class Lobby {
     /**
      * Add player to the Lobby.
      *
-     * @param player player to add
+     * @param playerOverview player to add
      */
-    public void addPlayer(Player player) {
-        players.put(player.getClientId(), player);
-        isPlayerReady.put(player.getClientId(), false);
+    public void addPlayer(PlayerOverview playerOverview) {
+        players.put(playerOverview.getConnectionId(), playerOverview);
+        isPlayerReady.put(playerOverview.getConnectionId(), false);
     }
 
     public int getLobbyId() {
@@ -57,12 +61,8 @@ public class Lobby {
         return maxPlayers;
     }
 
-    public Map<Integer, Player> getPlayers() {
+    public Map<Integer, PlayerOverview> getPlayers() {
         return players;
-    }
-
-    public boolean isCreator() {
-        return isCreator;
     }
 
     public Map<Integer, Boolean> getIsPlayerReady() {

@@ -3,11 +3,16 @@ package org.fyberov.dev.lobby.server.network;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Server;
 import org.fyberov.dev.lobby.server.listener.ServerListener;
+import org.fyberov.dev.lobby.server.lobby.Lobby;
 import org.fyberov.dev.lobby.server.network.packet.LobbyCreatePacket;
 import org.fyberov.dev.lobby.server.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.server.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.server.network.packet.RequestLobbiesPacket;
+import org.fyberov.dev.lobby.server.network.packet.ResponseLobbiesPacket;
+import org.fyberov.dev.lobby.server.player.PlayerOverview;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ServerSystem extends Server {
 
@@ -28,9 +33,16 @@ public class ServerSystem extends Server {
     private void registerKryoClasses() {
         Kryo kryo = getKryo();
         // register classes
+        kryo.register(HashMap.class);
+
         kryo.register(PlayerCreatePacket.class);
         kryo.register(LobbyCreatePacket.class);
         kryo.register(LobbyCreatedPacket.class);
+        kryo.register(RequestLobbiesPacket.class);
+        kryo.register(ResponseLobbiesPacket.class);
+        kryo.register(Lobby.class);
+        kryo.register(PlayerOverview.class);
+        kryo.register(PlayerOverview.Status.class);
     }
 
     private static final int DEFAULT_TCP_PORT = 8080;

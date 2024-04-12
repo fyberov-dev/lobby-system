@@ -1,6 +1,6 @@
 package org.fyberov.dev.lobby.server.player;
 
-public class Player {
+public class PlayerOverview {
 
     public enum Status {
         IDLE, IN_LOBBY, IN_GAME
@@ -11,12 +11,12 @@ public class Player {
     private Status status;
 
     /**
-     * Initialize player.
+     * Initialize playerOverview.
      *
-     * @param connectionId id of the player connection
+     * @param connectionId connection id of the player
      * @param name name of the player
      */
-    public Player(int connectionId, String name) {
+    public PlayerOverview(int connectionId, String name) {
         this.name = name;
         this.status = Status.IDLE;
     }

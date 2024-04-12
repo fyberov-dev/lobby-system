@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Listener;
 import org.fyberov.dev.lobby.GameClient;
 import org.fyberov.dev.lobby.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.network.packet.ResponseLobbiesPacket;
 
 public class ClientListener extends Listener {
 
@@ -12,9 +13,11 @@ public class ClientListener extends Listener {
     public void received(Connection connection, Object object) {
         switch (object) {
             case PlayerCreatePacket packet ->
-                    GameClient.createPlayer(packet.getName());
+                GameClient.createPlayer(packet.getName());
             case LobbyCreatedPacket packet ->
-                    GameClient.createLobby(packet.getLobbyId(), packet.getName(), packet.getMaxPlayers());
+                GameClient.createLobby(packet.getLobbyId(), packet.getName(), packet.getMaxPlayers());
+            case ResponseLobbiesPacket packet ->
+                GameClient.readLobbies(packet.getLobbies());
             default -> System.out.println("Unauthorized packet skipped");
         }
     }

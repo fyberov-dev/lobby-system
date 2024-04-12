@@ -5,18 +5,21 @@ import com.badlogic.gdx.Gdx;
 import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.ClientSystem;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
-import org.fyberov.dev.lobby.player.Player;
+import org.fyberov.dev.lobby.player.PlayerOverview;
+import org.fyberov.dev.lobby.runnable.ReadLobbiesRunnable;
 import org.fyberov.dev.lobby.runnable.SetScreenRunnable;
 import org.fyberov.dev.lobby.screens.LobbiesScreen;
 import org.fyberov.dev.lobby.screens.LobbyScreen;
 import org.fyberov.dev.lobby.screens.MainMenuScreen;
 import org.fyberov.dev.lobby.util.Constants;
 
+import java.util.Map;
+
 public class GameClient extends Game {
 
 	private static GameClient instance;
 	private static ClientSystem client;
-	private static Player player;
+	private static PlayerOverview playerOverview;
 	private static Lobby lobby;
 
 	/**
@@ -26,6 +29,7 @@ public class GameClient extends Game {
 		instance = this;
 		client = new ClientSystem(Constants.DEFAULT_HOST);
 	}
+
 
 	@Override
 	public void create() {
@@ -54,7 +58,7 @@ public class GameClient extends Game {
 	 * @param name name of the player to create
 	 */
 	public static void createPlayer(String name) {
-		player = new Player(client.getID(), name);
+		playerOverview = new PlayerOverview(client.getID(), name);
 		Gdx.app.postRunnable(new SetScreenRunnable(new LobbiesScreen()));
 	}
 
@@ -67,8 +71,17 @@ public class GameClient extends Game {
 	 * @param maxPlayers max players that can join (In this project default is 2)
 	 */
 	public static void createLobby(int lobbyId, String name, int maxPlayers) {
-		lobby = new Lobby(lobbyId, player, name, maxPlayers, true);
+		lobby = new Lobby(lobbyId, playerOverview, name, maxPlayers);
 		Gdx.app.postRunnable(new SetScreenRunnable(new LobbyScreen(lobby)));
+	}
+
+	/**
+	 * Read lobbies from the server.
+	 *
+	 * @param lobbies lobbies to read
+	 */
+	public static void readLobbies(Map<Integer, Lobby> lobbies) {
+		Gdx.app.postRunnable(new ReadLobbiesRunnable(instance.getScreen(), lobbies));
 	}
 
 	/**
@@ -93,8 +106,8 @@ public class GameClient extends Game {
 		return instance;
 	}
 
-	public static Player getPlayer() {
-		return player;
+	public static PlayerOverview getPlayer() {
+		return playerOverview;
 	}
 
 	public static Lobby getLobby() {
