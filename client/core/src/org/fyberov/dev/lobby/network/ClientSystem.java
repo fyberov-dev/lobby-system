@@ -3,12 +3,17 @@ package org.fyberov.dev.lobby.network;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import org.fyberov.dev.lobby.listeners.network.ClientListener;
+import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.packet.LobbyCreatePacket;
 import org.fyberov.dev.lobby.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.network.packet.RequestLobbiesPacket;
+import org.fyberov.dev.lobby.network.packet.ResponseLobbiesPacket;
+import org.fyberov.dev.lobby.player.PlayerOverview;
 import org.fyberov.dev.lobby.util.Constants;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ClientSystem extends Client {
 
@@ -35,9 +40,16 @@ public class ClientSystem extends Client {
     public void registerKryo() {
         Kryo kryo = getKryo();
         // register classes
+        kryo.register(HashMap.class);
+
         kryo.register(PlayerCreatePacket.class);
         kryo.register(LobbyCreatePacket.class);
         kryo.register(LobbyCreatedPacket.class);
+        kryo.register(RequestLobbiesPacket.class);
+        kryo.register(ResponseLobbiesPacket.class);
+        kryo.register(Lobby.class);
+        kryo.register(PlayerOverview.class);
+        kryo.register(PlayerOverview.Status.class);
     }
 
     /**

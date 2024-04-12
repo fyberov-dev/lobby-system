@@ -15,20 +15,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import org.fyberov.dev.lobby.GameClient;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.ScrollPaneBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
 import org.fyberov.dev.lobby.listeners.buttons.CreateLobbyClickListener;
-import org.fyberov.dev.lobby.listeners.buttons.JoinLobbyClickListener;
+//import org.fyberov.dev.lobby.listeners.buttons.JoinLobbyClickListener;
+import org.fyberov.dev.lobby.lobby.Lobby;
+import org.fyberov.dev.lobby.network.packet.RequestLobbiesPacket;
 import org.fyberov.dev.lobby.util.Constants;
 
 public class LobbiesScreen extends ScreenAdapter {
 
+    private Skin skin;
     private Stage stage;
     private Table lobbies;
 
     @Override
     public void show() {
+        this.skin = new Skin(new TextureAtlas(Gdx.files.internal("skin/skin.atlas")));
+
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
@@ -39,13 +45,13 @@ public class LobbiesScreen extends ScreenAdapter {
 //        stage.setDebugAll(true);
 
         stage.addActor(table);
+
+        getLobbies();
     }
 
     private Table setupUI() {
         Table table = new Table().center().top().pad(50);
         table.setFillParent(true);
-
-        Skin skin = new Skin(new TextureAtlas(Gdx.files.internal("skin/skin.atlas")));
 
         Label label = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withText("Lobbies")
@@ -56,6 +62,12 @@ public class LobbiesScreen extends ScreenAdapter {
                 .withSkin(skin)
                 .withUp("reload")
                 .build();
+        button.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                getLobbies();
+            }
+        });
 
         table.defaults().space(25);
         table.add(label);
@@ -65,17 +77,12 @@ public class LobbiesScreen extends ScreenAdapter {
 
         lobbies.defaults().space(25);
 
-        // For test
-        for (int i = 0; i < 25; i++) {
-            addLobby(skin);
-        }
-
         ScrollPane pane = new ScrollPaneBuilder(lobbies)
                 .withSkin(skin)
                 .withVScrollKnob("scrollpane")
                 .build();
 
-        table.add(pane).colspan(2).uniform().fillX();
+        table.add(pane).colspan(2).uniform().fillX().expandY();
 
         TextButton addLobbyButton = new TextButtonBuilder(Constants.DEFAULT_FONT_PATH)
                 .withText("Add lobby")
@@ -93,38 +100,59 @@ public class LobbiesScreen extends ScreenAdapter {
         return table;
     }
 
-    private void addLobby(Skin skin) {
-        Table lobby = new Table().pad(25);
+    /**
+     * Add lobby to the screen.
+     *
+     * @param lobby lobby to add
+     */
+    public void addLobby(Lobby lobby) {
+        Table lobbyTable = new Table().pad(25);
 
         Label lobbyNameLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
-                .withText("Player's lobby")
+                .withText(lobby.getName())
                 .withFontSize(36)
                 .build();
 
         Label lobbyPlayersLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
-                .withText("1/2")
+                .withText(String.format("%d/%d", lobby.getPlayers().size(), lobby.getMaxPlayers()))
                 .withFontSize(36)
                 .build();
 
-        lobby.background(new NinePatchDrawable(skin.getPatch("button_up")));
+        lobbyTable.background(new NinePatchDrawable(skin.getPatch("button_up")));
 //        lobby.addListener(new JoinLobbyClickListener());
-        lobby.addListener(new ClickListener() {
+        lobbyTable.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                lobby.background(new NinePatchDrawable(skin.getPatch("button_over")));
+                lobbyTable.background(new NinePatchDrawable(skin.getPatch("button_over")));
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                lobby.background(new NinePatchDrawable(skin.getPatch("button_up")));
+                lobbyTable.background(new NinePatchDrawable(skin.getPatch("button_up")));
             }
         });
 
-        lobby.defaults().space(50);
-        lobby.add(lobbyNameLabel);
-        lobby.add(lobbyPlayersLabel);
+        lobbyTable.defaults().space(50);
+        lobbyTable.add(lobbyNameLabel);
+        lobbyTable.add(lobbyPlayersLabel);
 
-        lobbies.add(lobby).padRight(25).row();
+        lobbies.add(lobbyTable).fillX().padRight(25).row();
+    }
+
+    /**
+     * Clear all lobbies.
+     */
+    public void clearLobbies() {
+        if (lobbies == null) return;
+
+        lobbies.clear();
+    }
+
+    /**
+     * Send lobbies request to the server.
+     */
+    public void getLobbies() {
+        GameClient.getClient().sendUDP(new RequestLobbiesPacket());
     }
 
     @Override

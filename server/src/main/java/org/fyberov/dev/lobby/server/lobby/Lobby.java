@@ -1,20 +1,17 @@
 package org.fyberov.dev.lobby.server.lobby;
 
-import org.fyberov.dev.lobby.server.player.Player;
+import org.fyberov.dev.lobby.server.player.PlayerOverview;
 import org.fyberov.dev.lobby.server.util.Constants;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Lobby {
 
-    private static int nextLobbyId = 0;
-
     private int lobbyId;
-    private Player creator;
+    private PlayerOverview creator;
     private String name;
-    private Map<Integer, Player> players;
+    private Map<Integer, PlayerOverview> players;
     private Map<Integer, Boolean> isPlayerReady;
     private int maxPlayers;
 
@@ -24,11 +21,11 @@ public class Lobby {
      * @param creator creator of the lobby
      * @param name name of the lobby
      */
-    public Lobby(Player creator, String name) {
-        this.lobbyId = getNextLobbyId();
+    public Lobby(int lobbyId, PlayerOverview creator, String name, int maxPlayers) {
+        this.lobbyId = lobbyId;
         this.name = name;
         this.creator = creator;
-        this.maxPlayers = Constants.MAX_PLAYERS_IN_LOBBY;
+        this.maxPlayers = maxPlayers;
 
         this.players = new HashMap<>();
         this.isPlayerReady = new HashMap<>();
@@ -39,15 +36,11 @@ public class Lobby {
     /**
      * Add player to the lobby.
      *
-     * @param player player to add
+     * @param playerOverview player to add
      */
-    public void addPlayer(Player player) {
-        players.put(player.getConnectionId(), player);
-        isPlayerReady.put(player.getConnectionId(), false);
-    }
-
-    private static int getNextLobbyId() {
-        return nextLobbyId++;
+    public void addPlayer(PlayerOverview playerOverview) {
+        players.put(playerOverview.getConnectionId(), playerOverview);
+        isPlayerReady.put(playerOverview.getConnectionId(), false);
     }
 
     public int getLobbyId() {
@@ -62,11 +55,11 @@ public class Lobby {
         return maxPlayers;
     }
 
-    public Player getCreator() {
+    public PlayerOverview getCreator() {
         return creator;
     }
 
-    public Map<Integer, Player> getPlayers() {
+    public Map<Integer, PlayerOverview> getPlayers() {
         return players;
     }
 

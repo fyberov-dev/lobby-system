@@ -1,22 +1,29 @@
 package org.fyberov.dev.lobby.player;
 
-public class Player {
+public class PlayerOverview {
 
     public enum Status {
         IDLE, IN_LOBBY, IN_GAME
     }
 
-    private int clientId;
+    private int connectionId;
     private String name;
     private Status status;
 
     /**
-     * Initialize player.
+     * Initialize empty PlayerOverview.
+     */
+    public PlayerOverview() {
+    }
+
+    /**
+     * Initialize playerOverview.
      *
+     * @param connectionId connection id of the player
      * @param name name of the player
      */
-    public Player(int clientId, String name) {
-        this.clientId = clientId;
+    public PlayerOverview(int connectionId, String name) {
+        this.connectionId = connectionId;
         this.name = name;
         this.status = Status.IDLE;
     }
@@ -29,7 +36,7 @@ public class Player {
         return status;
     }
 
-    public int getClientId() {
-        return clientId;
+    public int getConnectionId() {
+        return connectionId;
     }
 }
