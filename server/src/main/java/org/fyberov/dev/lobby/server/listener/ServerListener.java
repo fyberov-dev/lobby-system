@@ -6,18 +6,26 @@ import org.fyberov.dev.lobby.server.GameServer;
 import org.fyberov.dev.lobby.server.network.packet.LobbyCreatePacket;
 import org.fyberov.dev.lobby.server.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.server.network.packet.RequestLobbiesPacket;
+import org.fyberov.dev.lobby.server.network.packet.RequestToJoinLobbyPacket;
 
 public class ServerListener extends Listener {
 
     @Override
     public void received(Connection connection, Object object) {
         switch (object) {
+            // create player
             case PlayerCreatePacket packet ->
                 GameServer.getInstance().addPlayer(connection.getID(), packet.getName());
+            // create lobby
             case LobbyCreatePacket packet ->
                 GameServer.getInstance().getLobbySystem().addLobby(connection.getID());
+            // Get request from the client to get lobbies list
             case RequestLobbiesPacket packet ->
                 GameServer.getInstance().getLobbySystem().sendLobbies(connection.getID());
+            // Get request from the server to join certain lobby
+            case RequestToJoinLobbyPacket packet ->
+                GameServer.getInstance().getLobbySystem().joinLobby(connection.getID(), packet.getLobbyId());
+            // skip packet
             default -> System.out.println("Unauthorized packet skipped");
         }
     }

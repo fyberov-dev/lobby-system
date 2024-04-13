@@ -7,7 +7,10 @@ import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.packet.LobbyCreatePacket;
 import org.fyberov.dev.lobby.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.network.packet.PlayerJoinedLobby;
 import org.fyberov.dev.lobby.network.packet.RequestLobbiesPacket;
+import org.fyberov.dev.lobby.network.packet.RequestToJoinLobbyPacket;
+import org.fyberov.dev.lobby.network.packet.ResponseJoinedLobbyPacket;
 import org.fyberov.dev.lobby.network.packet.ResponseLobbiesPacket;
 import org.fyberov.dev.lobby.player.PlayerOverview;
 import org.fyberov.dev.lobby.util.Constants;
@@ -50,6 +53,9 @@ public class ClientSystem extends Client {
         kryo.register(Lobby.class);
         kryo.register(PlayerOverview.class);
         kryo.register(PlayerOverview.Status.class);
+        kryo.register(RequestToJoinLobbyPacket.class);
+        kryo.register(ResponseJoinedLobbyPacket.class);
+        kryo.register(PlayerJoinedLobby.class);
     }
 
     /**

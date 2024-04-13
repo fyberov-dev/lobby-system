@@ -7,7 +7,10 @@ import org.fyberov.dev.lobby.server.lobby.Lobby;
 import org.fyberov.dev.lobby.server.network.packet.LobbyCreatePacket;
 import org.fyberov.dev.lobby.server.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.server.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.server.network.packet.PlayerJoinedLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.RequestLobbiesPacket;
+import org.fyberov.dev.lobby.server.network.packet.RequestToJoinLobbyPacket;
+import org.fyberov.dev.lobby.server.network.packet.ResponseJoinedLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.ResponseLobbiesPacket;
 import org.fyberov.dev.lobby.server.player.PlayerOverview;
 
@@ -43,6 +46,9 @@ public class ServerSystem extends Server {
         kryo.register(Lobby.class);
         kryo.register(PlayerOverview.class);
         kryo.register(PlayerOverview.Status.class);
+        kryo.register(RequestToJoinLobbyPacket.class);
+        kryo.register(ResponseJoinedLobbyPacket.class);
+        kryo.register(PlayerJoinedLobbyPacket.class);
     }
 
     private static final int DEFAULT_TCP_PORT = 8080;

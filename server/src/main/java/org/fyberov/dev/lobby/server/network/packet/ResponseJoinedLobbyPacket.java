@@ -2,16 +2,16 @@ package org.fyberov.dev.lobby.server.network.packet;
 
 import org.fyberov.dev.lobby.server.lobby.Lobby;
 
-public class LobbyCreatedPacket {
+public class ResponseJoinedLobbyPacket {
 
     private Lobby lobby;
 
     /**
-     * Initialize LobbyCreatedPacket.
+     * Initialize ResponseJoinedLobbyPacket.
      *
-     * @param lobby created lobby
+     * @param lobby lobby to join
      */
-    public LobbyCreatedPacket(Lobby lobby) {
+    public ResponseJoinedLobbyPacket(Lobby lobby) {
         this.lobby = lobby;
     }
 

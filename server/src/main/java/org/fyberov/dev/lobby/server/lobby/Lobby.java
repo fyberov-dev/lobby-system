@@ -1,7 +1,6 @@
 package org.fyberov.dev.lobby.server.lobby;
 
 import org.fyberov.dev.lobby.server.player.PlayerOverview;
-import org.fyberov.dev.lobby.server.util.Constants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +40,10 @@ public class Lobby {
     public void addPlayer(PlayerOverview playerOverview) {
         players.put(playerOverview.getConnectionId(), playerOverview);
         isPlayerReady.put(playerOverview.getConnectionId(), false);
+    }
+
+    public boolean isFull() {
+        return players.size() >= maxPlayers;
     }
 
     public int getLobbyId() {

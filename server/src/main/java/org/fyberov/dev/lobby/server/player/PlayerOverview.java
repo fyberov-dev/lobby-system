@@ -17,6 +17,7 @@ public class PlayerOverview {
      * @param name name of the player
      */
     public PlayerOverview(int connectionId, String name) {
+        this.connectionId = connectionId;
         this.name = name;
         this.status = Status.IDLE;
     }

@@ -20,7 +20,7 @@ import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.ScrollPaneBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
 import org.fyberov.dev.lobby.listeners.buttons.CreateLobbyClickListener;
-//import org.fyberov.dev.lobby.listeners.buttons.JoinLobbyClickListener;
+import org.fyberov.dev.lobby.listeners.buttons.JoinLobbyClickListener;
 import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.packet.RequestLobbiesPacket;
 import org.fyberov.dev.lobby.util.Constants;
@@ -119,7 +119,7 @@ public class LobbiesScreen extends ScreenAdapter {
                 .build();
 
         lobbyTable.background(new NinePatchDrawable(skin.getPatch("button_up")));
-//        lobby.addListener(new JoinLobbyClickListener());
+        lobbyTable.addListener(new JoinLobbyClickListener(lobby.getLobbyId()));
         lobbyTable.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {

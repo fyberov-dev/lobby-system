@@ -49,6 +49,10 @@ public class Lobby {
         isPlayerReady.put(playerOverview.getConnectionId(), false);
     }
 
+    public boolean isFull() {
+        return players.size() >= maxPlayers;
+    }
+
     public int getLobbyId() {
         return lobbyId;
     }

@@ -21,14 +21,14 @@ import org.fyberov.dev.lobby.util.Constants;
 
 public class LobbyScreen extends ScreenAdapter {
 
-    private Lobby currentLobby;
+    private Lobby lobby;
     private Stage stage;
     private Skin skin;
-    private Table lobby;
+    private Table lobbyTable;
     private Table players;
 
-    public LobbyScreen(Lobby currentLobby) {
-        this.currentLobby = currentLobby;
+    public LobbyScreen(Lobby lobby) {
+        this.lobby = lobby;
     }
 
     @Override
@@ -40,12 +40,12 @@ public class LobbyScreen extends ScreenAdapter {
 
         setupUI();
 
-        stage.addActor(lobby);
+        stage.addActor(lobbyTable);
     }
 
     private void setupUI() {
-        lobby = new Table().pad(50);
-        lobby.setFillParent(true);
+        lobbyTable = new Table().pad(50);
+        lobbyTable.setFillParent(true);
 
         TextButton backButton = new TextButtonBuilder(Constants.DEFAULT_FONT_PATH)
                 .withSkin(skin)
@@ -55,23 +55,25 @@ public class LobbyScreen extends ScreenAdapter {
 
         Label lobbyNameLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withFontSize(36)
-                .withText(GameClient.getLobby().getName())
+                .withText(lobby.getName())
                 .build();
 
-        lobby.defaults().space(50);
-        lobby.add(backButton);
-        lobby.add(lobbyNameLabel);
+        lobbyTable.defaults().space(50);
+        lobbyTable.add(backButton);
+        lobbyTable.add(lobbyNameLabel);
 
-        lobby.row();
+        lobbyTable.row();
 
         players = new Table();
         players.defaults().space(25);
 
-        addPlayer(GameClient.getPlayer());
+        for (PlayerOverview playerOverview : lobby.getPlayers().values()) {
+            addPlayer(playerOverview);
+        }
 
-        lobby.add(players).colspan(2).fillX().growY();
+        lobbyTable.add(players).colspan(2).fillX().growY();
 
-        lobby.row();
+        lobbyTable.row();
 
         TextButton readyButton = new TextButtonBuilder(Constants.DEFAULT_FONT_PATH)
                 .withText("READY")
@@ -82,7 +84,7 @@ public class LobbyScreen extends ScreenAdapter {
                 .withOver("button_over")
                 .build();
 
-        lobby.add(readyButton).colspan(2).fillX();
+        lobbyTable.add(readyButton).colspan(2).fillX();
 
 //        lobby.setDebug(true);
     }
@@ -92,10 +94,10 @@ public class LobbyScreen extends ScreenAdapter {
      *
      * @param playerOverview player to add
      */
-    private void addPlayer(PlayerOverview playerOverview) {
+    public void addPlayer(PlayerOverview playerOverview) {
         Table playerTable = new Table().pad(25, 50, 25, 50);
 
-        String statusText = currentLobby.getIsPlayerReady().get(playerOverview.getConnectionId())
+        String statusText = lobby.getIsPlayerReady().get(GameClient.getClient().getID())
                 ? "Is ready"
                 : "Is not ready";
 
