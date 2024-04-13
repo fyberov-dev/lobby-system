@@ -14,10 +14,13 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.fyberov.dev.lobby.GameClient;
 import org.fyberov.dev.lobby.builder.components.LabelBuilder;
 import org.fyberov.dev.lobby.builder.components.TextButtonBuilder;
+import org.fyberov.dev.lobby.listeners.buttons.ChangeStatusClickListener;
 import org.fyberov.dev.lobby.listeners.buttons.SetLobbiesScreenOnClickListener;
 import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.player.PlayerOverview;
 import org.fyberov.dev.lobby.util.Constants;
+
+import java.util.HashMap;
 
 public class LobbyScreen extends ScreenAdapter {
 
@@ -26,9 +29,11 @@ public class LobbyScreen extends ScreenAdapter {
     private Skin skin;
     private Table lobbyTable;
     private Table players;
+    private HashMap<Integer, Label> playerStatusLabels;
 
     public LobbyScreen(Lobby lobby) {
         this.lobby = lobby;
+        this.playerStatusLabels = new HashMap<>();
     }
 
     @Override
@@ -83,6 +88,7 @@ public class LobbyScreen extends ScreenAdapter {
                 .withDown("button_down")
                 .withOver("button_over")
                 .build();
+        readyButton.addListener(new ChangeStatusClickListener(this, GameClient.getPlayer().getConnectionId()));
 
         lobbyTable.add(readyButton).colspan(2).fillX();
 
@@ -105,6 +111,7 @@ public class LobbyScreen extends ScreenAdapter {
                 .withFontSize(24)
                 .withText(statusText)
                 .build();
+        playerStatusLabels.put(playerOverview.getConnectionId(), playerStatusLabel);
 
         Label playerNameLabel = new LabelBuilder(Constants.DEFAULT_FONT_PATH)
                 .withFontSize(36)
@@ -118,6 +125,20 @@ public class LobbyScreen extends ScreenAdapter {
         playerTable.background(new NinePatchDrawable(skin.getPatch("button_up")));
 
         players.add(playerTable).growX().row();
+    }
+
+    /**
+     * Update player status label.
+     *
+     * @param connectionId id of the player label
+     * @param updatedStatus new status
+     */
+    public void updatePlayerStatus(int connectionId, boolean updatedStatus) {
+        Label label = playerStatusLabels.get(connectionId);
+        label.setText(updatedStatus
+                ? "Is ready"
+                : "Is not ready"
+        );
     }
 
     @Override
@@ -136,5 +157,9 @@ public class LobbyScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public Lobby getLobby() {
+        return lobby;
     }
 }

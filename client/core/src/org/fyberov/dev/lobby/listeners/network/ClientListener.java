@@ -8,6 +8,7 @@ import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.network.packet.PlayerJoinedLobby;
 import org.fyberov.dev.lobby.network.packet.ResponseJoinedLobbyPacket;
 import org.fyberov.dev.lobby.network.packet.ResponseLobbiesPacket;
+import org.fyberov.dev.lobby.network.packet.SwitchPlayerStatusPacket;
 
 public class ClientListener extends Listener {
 
@@ -26,8 +27,12 @@ public class ClientListener extends Listener {
             // Get response from the server if player joined the lobby
             case ResponseJoinedLobbyPacket packet ->
                 GameClient.joinLobby(packet.getLobby());
+            // Get joined player
             case PlayerJoinedLobby packet ->
                 GameClient.addPlayerToLobby(packet.getPlayerOverview());
+            // get switched player status
+            case SwitchPlayerStatusPacket packet ->
+                GameClient.updatePlayerStatus(packet.getConnectionId(), packet.getLobbyId());
             // skip packet
             default -> System.out.println("Unauthorized packet skipped");
         }

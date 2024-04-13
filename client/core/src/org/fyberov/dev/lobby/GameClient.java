@@ -5,11 +5,13 @@ import com.badlogic.gdx.Gdx;
 import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.ClientSystem;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
+import org.fyberov.dev.lobby.network.packet.SwitchPlayerStatusPacket;
 import org.fyberov.dev.lobby.player.PlayerOverview;
 import org.fyberov.dev.lobby.runnable.AddPlayerRunnable;
 import org.fyberov.dev.lobby.runnable.JoinLobbyRunnable;
 import org.fyberov.dev.lobby.runnable.ReadLobbiesRunnable;
 import org.fyberov.dev.lobby.runnable.SetScreenRunnable;
+import org.fyberov.dev.lobby.runnable.SwitchPlayerStatusRunnable;
 import org.fyberov.dev.lobby.screens.LobbiesScreen;
 import org.fyberov.dev.lobby.screens.LobbyScreen;
 import org.fyberov.dev.lobby.screens.MainMenuScreen;
@@ -82,6 +84,11 @@ public class GameClient extends Game {
 		Gdx.app.postRunnable(new ReadLobbiesRunnable(instance.getScreen(), lobbies));
 	}
 
+	/**
+	 * Add player to the lobby.
+	 *
+	 * @param playerOverview player to add
+	 */
 	public static void addPlayerToLobby(PlayerOverview playerOverview) {
 		Gdx.app.postRunnable(new AddPlayerRunnable(instance.getScreen(), playerOverview));
 	}
@@ -93,6 +100,16 @@ public class GameClient extends Game {
 	 */
 	public static void joinLobby(Lobby lobby) {
 		Gdx.app.postRunnable(new JoinLobbyRunnable(lobby));
+	}
+
+	/**
+	 * Update player status in lobby from 'not ready' to 'ready' and vice versa.
+	 *
+	 * @param connectionId id of the player who switched the status
+	 * @param lobbyId id of the lobby
+	 */
+	public static void updatePlayerStatus(int connectionId, int lobbyId) {
+		Gdx.app.postRunnable(new SwitchPlayerStatusRunnable(instance.getScreen(), connectionId));
 	}
 
 	/**
@@ -120,8 +137,4 @@ public class GameClient extends Game {
 	public static PlayerOverview getPlayer() {
 		return playerOverview;
 	}
-
-//	public static Lobby getLobby() {
-//		return lobby;
-//	}
 }

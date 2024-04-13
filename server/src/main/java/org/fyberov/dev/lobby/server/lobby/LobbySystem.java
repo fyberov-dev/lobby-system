@@ -5,6 +5,7 @@ import org.fyberov.dev.lobby.server.network.packet.LobbyCreatedPacket;
 import org.fyberov.dev.lobby.server.network.packet.PlayerJoinedLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.ResponseJoinedLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.ResponseLobbiesPacket;
+import org.fyberov.dev.lobby.server.network.packet.SwitchPlayerStatusPacket;
 import org.fyberov.dev.lobby.server.player.PlayerOverview;
 import org.fyberov.dev.lobby.server.util.Constants;
 
@@ -63,14 +64,7 @@ public class LobbySystem {
     }
 
     private void sendPlayerJoinToLobby(Lobby lobby, PlayerOverview playerOverview) {
-        List<Integer> playersId = lobby
-                .getPlayers()
-                .values()
-                .stream()
-                .map(PlayerOverview::getConnectionId)
-                .toList();
-
-        for (int playerId: playersId) {
+        for (int playerId: getPlayersInLobbyById(lobby)) {
             if (playerId == playerOverview.getConnectionId()) continue;
 
             GameServer
@@ -78,6 +72,33 @@ public class LobbySystem {
                     .getServer()
                     .sendToUDP(playerId, new PlayerJoinedLobbyPacket(playerOverview));
         }
+    }
+
+
+    public void changePlayerStatus(int connectionId, int lobbyId) {
+        Lobby lobby = lobbies.get(lobbyId);
+        lobby.switchPlayerStatus(connectionId);
+        sendPlayerSwitchStatusToLobby(lobby, connectionId);
+    }
+
+    private void sendPlayerSwitchStatusToLobby(Lobby lobby, int connectionId) {
+        for (int playerId: getPlayersInLobbyById(lobby)) {
+            if (playerId == connectionId) continue;
+
+            GameServer
+                    .getInstance()
+                    .getServer()
+                    .sendToUDP(playerId, new SwitchPlayerStatusPacket(connectionId, lobby.getLobbyId()));
+        }
+    }
+
+    public List<Integer> getPlayersInLobbyById(Lobby lobby) {
+        return lobby
+                .getPlayers()
+                .values()
+                .stream()
+                .map(PlayerOverview::getConnectionId)
+                .toList();
     }
 
     /**

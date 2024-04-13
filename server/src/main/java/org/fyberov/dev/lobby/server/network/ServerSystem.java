@@ -12,6 +12,7 @@ import org.fyberov.dev.lobby.server.network.packet.RequestLobbiesPacket;
 import org.fyberov.dev.lobby.server.network.packet.RequestToJoinLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.ResponseJoinedLobbyPacket;
 import org.fyberov.dev.lobby.server.network.packet.ResponseLobbiesPacket;
+import org.fyberov.dev.lobby.server.network.packet.SwitchPlayerStatusPacket;
 import org.fyberov.dev.lobby.server.player.PlayerOverview;
 
 import java.io.IOException;
@@ -49,6 +50,7 @@ public class ServerSystem extends Server {
         kryo.register(RequestToJoinLobbyPacket.class);
         kryo.register(ResponseJoinedLobbyPacket.class);
         kryo.register(PlayerJoinedLobbyPacket.class);
+        kryo.register(SwitchPlayerStatusPacket.class);
     }
 
     private static final int DEFAULT_TCP_PORT = 8080;
