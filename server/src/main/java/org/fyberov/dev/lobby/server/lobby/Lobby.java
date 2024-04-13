@@ -42,8 +42,25 @@ public class Lobby {
         isPlayerReady.put(playerOverview.getConnectionId(), false);
     }
 
+    /**
+     * Check if lobby is full.
+     *
+     * @return true if lobby is full, otherwise return false
+     */
     public boolean isFull() {
         return players.size() >= maxPlayers;
+    }
+
+    /**
+     * Switch player status in lobby.
+     *
+     * @param connectionId id of the person to switch the status
+     * @return new status of the player
+     */
+    public boolean switchPlayerStatus(int connectionId) {
+        boolean playerStatusReversed = !isPlayerReady.get(connectionId);
+        isPlayerReady.put(connectionId, playerStatusReversed);
+        return playerStatusReversed;
     }
 
     public int getLobbyId() {
