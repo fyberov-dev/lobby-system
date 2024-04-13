@@ -6,6 +6,8 @@ import org.fyberov.dev.lobby.lobby.Lobby;
 import org.fyberov.dev.lobby.network.ClientSystem;
 import org.fyberov.dev.lobby.network.packet.PlayerCreatePacket;
 import org.fyberov.dev.lobby.player.PlayerOverview;
+import org.fyberov.dev.lobby.runnable.AddPlayerRunnable;
+import org.fyberov.dev.lobby.runnable.JoinLobbyRunnable;
 import org.fyberov.dev.lobby.runnable.ReadLobbiesRunnable;
 import org.fyberov.dev.lobby.runnable.SetScreenRunnable;
 import org.fyberov.dev.lobby.screens.LobbiesScreen;
@@ -20,7 +22,7 @@ public class GameClient extends Game {
 	private static GameClient instance;
 	private static ClientSystem client;
 	private static PlayerOverview playerOverview;
-	private static Lobby lobby;
+//	private static Lobby lobby;
 
 	/**
 	 * Initialize GameClient.
@@ -29,7 +31,6 @@ public class GameClient extends Game {
 		instance = this;
 		client = new ClientSystem(Constants.DEFAULT_HOST);
 	}
-
 
 	@Override
 	public void create() {
@@ -66,12 +67,9 @@ public class GameClient extends Game {
 	 * Create new Lobby instance.
 	 * Set screen to the LobbyScreen.
 	 *
-	 * @param lobbyId id of the lobby
-	 * @param name name of the lobby
-	 * @param maxPlayers max players that can join (In this project default is 2)
+	 * @param lobby created lobby
 	 */
-	public static void createLobby(int lobbyId, String name, int maxPlayers) {
-		lobby = new Lobby(lobbyId, playerOverview, name, maxPlayers);
+	public static void createLobby(Lobby lobby) {
 		Gdx.app.postRunnable(new SetScreenRunnable(new LobbyScreen(lobby)));
 	}
 
@@ -82,6 +80,19 @@ public class GameClient extends Game {
 	 */
 	public static void readLobbies(Map<Integer, Lobby> lobbies) {
 		Gdx.app.postRunnable(new ReadLobbiesRunnable(instance.getScreen(), lobbies));
+	}
+
+	public static void addPlayerToLobby(PlayerOverview playerOverview) {
+		Gdx.app.postRunnable(new AddPlayerRunnable(instance.getScreen(), playerOverview));
+	}
+
+	/**
+	 * Join lobby.
+	 *
+	 * @param lobby lobby to join
+	 */
+	public static void joinLobby(Lobby lobby) {
+		Gdx.app.postRunnable(new JoinLobbyRunnable(lobby));
 	}
 
 	/**
@@ -110,7 +121,7 @@ public class GameClient extends Game {
 		return playerOverview;
 	}
 
-	public static Lobby getLobby() {
-		return lobby;
-	}
+//	public static Lobby getLobby() {
+//		return lobby;
+//	}
 }

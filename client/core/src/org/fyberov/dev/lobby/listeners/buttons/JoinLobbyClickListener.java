@@ -1,15 +1,25 @@
 package org.fyberov.dev.lobby.listeners.buttons;
 
-// TODO : Temporary commented. Improve by new functionality.
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import org.fyberov.dev.lobby.GameClient;
+import org.fyberov.dev.lobby.network.packet.RequestToJoinLobbyPacket;
 
-//import com.badlogic.gdx.scenes.scene2d.InputEvent;
-//import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-//import org.fyberov.dev.lobby.GameClient;
-//import org.fyberov.dev.lobby.screens.LobbyScreen;
-//public class JoinLobbyClickListener extends ClickListener {
-//
-//    @Override
-//    public void clicked(InputEvent event, float x, float y) {
-//        GameClient.getInstance().setScreen(new LobbyScreen());
-//    }
-//}
+public class JoinLobbyClickListener extends ClickListener {
+
+    private int lobbyId;
+
+    /**
+     * Initialize JoinLobbyClickListener.
+     *
+     * @param lobbyId id of the lobby to join
+     */
+    public JoinLobbyClickListener(int lobbyId) {
+        this.lobbyId = lobbyId;
+    }
+
+    @Override
+    public void clicked(InputEvent event, float x, float y) {
+        GameClient.getClient().sendUDP(new RequestToJoinLobbyPacket(lobbyId));
+    }
+}
